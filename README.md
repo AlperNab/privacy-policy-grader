@@ -1,33 +1,464 @@
-# privacy-policy-grader
+<div align="center">
 
-> **Any privacy policy URL → letter grade A–F.** Scores on data collection, third-party sharing, user rights, retention, GDPR/CCPA signals. Flags every red flag with direct quotes.
+# ⚖️ Privacy Policy Grader
 
-[![PyPI](https://img.shields.io/pypi/v/privacy-policy-grader?style=flat)](https://pypi.org/project/privacy-policy-grader/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+### Contract and compliance review UX with clause grids, obligation tracking, redline planning, and risk controls.
 
-## Quickstart
+![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white) ![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688?logo=fastapi&logoColor=white) ![SQLite](https://img.shields.io/badge/SQLite-Job_History-003B57?logo=sqlite&logoColor=white) ![Local LLM](https://img.shields.io/badge/Local_LLM-Ollama%20%7C%20LM%20Studio%20%7C%20vLLM-111827) ![Cloud LLM](https://img.shields.io/badge/Cloud_LLM-OpenAI%20%7C%20Anthropic%20%7C%20Gemini%20%7C%20Mistral-7C3AED) ![No Fake Data](https://img.shields.io/badge/Policy-No_Fake_Live_Data-red)
+
+**Domain:** `Legal / Privacy Compliance` · **Suite:** `Legal & Compliance Suite` · **Accent:** `#c084fc`
+
+[🚀 Quick Start](#-quick-start) · [✨ Features](#-features) · [🎛️ Customization](#️-customization) · [🧠 LLM Providers](#-llm-providers) · [🧪 Testing](#-testing) · [🧯 Troubleshooting](#-troubleshooting)
+
+</div>
+
+---
+
+## 🧭 What This Project Does
+
+**Privacy Policy Grader** is a standalone, browser-based AI workflow app for **Legal / Privacy Compliance**. It turns structured inputs, uploaded files, and project-specific settings into reviewable outputs using a deterministic local engine plus optional local/cloud LLM enhancement.
+
+**Core job:** Privacy policy → grade and red flags.
+
+**Designed for:** Domain operator, business owner, analyst, or team member who needs this workflow executed reliably.
+
+**Why use it:**
+
+- 🧩 **Standalone project folder:** run this project by itself without depending on a central dashboard.
+- 🖥️ **Elegant GUI:** includes project-specific panels, structured forms, upload handling, output preview, and exports.
+- 🧠 **Model-flexible:** choose local models for privacy or cloud models for stronger reasoning.
+- 🧾 **Auditable:** every run is stored in SQLite with inputs, settings, result, and export history.
+- 🚫 **No fake live data:** external systems are only used when real API keys/connectors are configured.
+- 🛡️ **Human review gates:** sensitive legal, medical, hiring, finance, or security outputs are flagged for review.
+
+---
+
+## ✨ Features
+
+- GDPR/CCPA/regime checks
+- data category extraction
+- third-party sharing map
+- retention/user-rights scoring
+- consent dark-pattern review
+- improvement draft
+
+### 🧱 Built-In Platform Capabilities
+
+- ⚡ **FastAPI backend** with documented JSON endpoints.
+- 🎨 **Responsive web UI** with dark, polished SaaS-style layout.
+- 📁 **File upload and text extraction** for common document/code formats.
+- 🗂️ **Job history** saved locally in `data/*.sqlite3`.
+- 🔐 **Encrypted provider settings** for API keys and local endpoints.
+- 📤 **Exports** to Markdown, JSON, DOCX, and PDF when dependencies are available.
+- 🔌 **Provider routing** for local and cloud LLMs.
+- 🧪 **Local test file** to verify the project runs.
+
+---
+
+## 🎨 UX/UI Design
+
+**UX profile:** `Legal Review Desk`
+
+**Workflow layout:** Document intake → clause map → risk heatmap → negotiation/actions
+
+**Empty state:** Paste legal text or upload a document. This is decision support, not legal advice.
+
+### Main UI Components
+
+- Clause extraction grid
+- Risk heatmap
+- Obligation timeline
+- Redline/position panel
+- Negotiation checklist
+
+### Review / Workflow Lanes
+
+- Read
+- Classify
+- Risk-rate
+- Negotiate
+- Finalize
+
+### Metrics Shown in the Interface
+
+- Risk exposure
+- Missing clauses
+- Obligations found
+- Review readiness
+
+### Quick Actions
+
+- Extract clauses
+- Build risk matrix
+- Create negotiation points
+- Prepare redline checklist
+
+---
+
+## 🧩 Project Inputs
+
+These are the main fields exposed by the GUI and `/api/run`. Required fields are enforced before execution.
+
+| Field | Type | Required | Default | Purpose |
+|---|---:|:---:|---|---|
+| `privacy_policy`<br>Privacy policy | text | Yes | — | Affects input: Privacy policy. |
+| `work_brief`<br>Work brief / source text / URL / instructions | textarea | Yes | — | Paste the material, URL, description, or instruction needed for this project. |
+
+---
+
+## 🎛️ Customization
+
+This project is not a generic prompt box. The customization controls are connected to workflow behavior, validation, output shape, and export format.
+
+| Field | Type | Required | Default | Purpose |
+|---|---:|:---:|---|---|
+| `execution_mode`<br>Execution mode | select | No | Production | Controls strictness, depth, and output format for this project workflow. |
+| `region_regime`<br>region/regime | text | No | — | Affects customization: region/regime. |
+| `industry`<br>industry | text | No | — | Affects customization: industry. |
+| `user_type`<br>user type | text | No | — | Affects customization: user type. |
+| `strictness`<br>strictness | slider | No | 50 | Affects customization: strictness. |
+| `data_categories`<br>data categories | text | No | — | Affects customization: data categories. |
+| `evidence_quotes`<br>evidence quotes | text | No | — | Affects customization: evidence quotes. |
+| `reading_level`<br>reading level | select | No | — | Affects customization: reading level. |
+| `output_format`<br>output format | select | No | Markdown | Affects customization: output format. |
+| `language`<br>language | select | No | English | Affects customization: language. |
+| `privacy_mode`<br>privacy mode | select | No | cloud allowed | Affects customization: privacy mode. |
+| `confidence_threshold`<br>Confidence threshold | slider | No | 75 | Items below this confidence are escalated to the human review queue. |
+
+### Select / Option Controls
+
+- **Execution mode**: Draft, Production, Audit / strict review, JSON/API output
+- **output format**: Markdown, JSON, CSV, PDF, DOCX, XLSX
+- **language**: English, Arabic, Egyptian Arabic, French, German, Spanish
+- **privacy mode**: cloud allowed, local only, redact sensitive data
+
+---
+
+## 🧠 LLM Providers
+
+You can run the project with the local deterministic engine, or enhance the output with a configured LLM provider.
+
+### Supported Provider Types
+
+| Provider Type | Examples | Best For |
+|---|---|---|
+| Local OpenAI-compatible | Ollama, LM Studio, vLLM | Private files, offline/local workflows, cost control |
+| Cloud OpenAI-compatible | OpenAI, OpenRouter, custom gateway | General high-quality generation and structured output |
+| Anthropic | Claude models | Long-context reasoning and document-heavy workflows |
+| Google Gemini | Gemini models | Multimodal or Google ecosystem workflows |
+| Mistral | Mistral API | Fast European cloud models |
+| Azure OpenAI | Azure deployments | Enterprise-controlled cloud deployment |
+| AWS Bedrock | Bedrock-hosted models | AWS enterprise environments |
+
+### Recommended Model Usage
+
+| Use Case | Recommendation |
+|---|---|
+| Drafting | fast cloud or local instruct model |
+| Reasoning | strong reasoning model |
+| Private documents | local model via Ollama/LM Studio/vLLM |
+| Vision/PDF pages | vision-capable model when image pages are used |
+
+---
+
+## 🚀 Quick Start
+
+### 1) Clone or open this folder
 
 ```bash
-pip install privacy-policy-grader
-python -m privacy_policy_grader https://example.com/privacy
-python -m privacy_policy_grader https://example.com/privacy --json
+cd privacy-policy-grader
 ```
 
-## Grades and what they mean
+### 2) Run on macOS / Linux / WSL
 
-| Grade | Meaning |
-|-------|---------|
-| A | Minimal collection, clear rights, no selling, easy deletion |
-| B | Reasonable collection, good transparency, disclosed sharing |
-| C | Broad collection, partner sharing, limited user control |
-| D | Excessive collection, vague sharing, hard to opt out |
-| F | Sells data, no user rights, tracks everything |
+```bash
+chmod +x run_gui.sh
+./run_gui.sh
+```
 
-## What it detects
+### 3) Run on Windows PowerShell
 
-Sells your data · Behavioral advertising · Law enforcement disclosure · 
-Data retention period · Your deletion rights · Portability · Access rights · 
-GDPR/CCPA compliance signals · Readability grade · All red flags with quotes
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\run_gui_windows.ps1
+```
 
-## License
-MIT © [Alper Nabil Gabra Zakher](https://github.com/AlperNab)
+### 4) Open the GUI
+
+```text
+http://127.0.0.1:9148
+```
+
+---
+
+## 🛠️ Manual Installation
+
+Use this when you want full control instead of the run scripts.
+
+```bash
+cd privacy-policy-grader
+python -m venv .venv
+source .venv/bin/activate      # Windows: .venv\Scripts\activate
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+cp .env.example .env           # Windows: copy .env.example .env
+uvicorn app.main:app --host 127.0.0.1 --port 9148
+```
+
+---
+
+## 🔐 Environment Variables
+
+The project can be configured through the GUI settings screen or `.env`/environment variables.
+
+| Variable | Purpose |
+|---|---|
+| `AI_SUITE_HOST` | Host to bind the local app, usually `127.0.0.1`. |
+| `AI_SUITE_PORT` | Port for this project GUI, default `9148`. |
+| `AI_SUITE_DB` | SQLite database path for job history. |
+| `AI_SUITE_SECRET_KEY` | Secret used for local encryption/signing. Set this in production. |
+| `OPENAI_API_KEY` | Enables OpenAI-compatible cloud calls. |
+| `ANTHROPIC_API_KEY` | Enables Anthropic/Claude calls. |
+| `GEMINI_API_KEY` | Enables Google Gemini calls. |
+| `OPENROUTER_API_KEY` | Enables OpenRouter model routing. |
+| `MISTRAL_API_KEY` | Enables Mistral cloud models. |
+| `AZURE_OPENAI_ENDPOINT` | Azure OpenAI endpoint URL. |
+| `AZURE_OPENAI_API_KEY` | Azure OpenAI key. |
+| `AZURE_OPENAI_DEPLOYMENT` | Azure deployment name. |
+| `OLLAMA_BASE_URL` | Local Ollama OpenAI-compatible base URL. |
+| `LMSTUDIO_BASE_URL` | Local LM Studio OpenAI-compatible base URL. |
+| `VLLM_BASE_URL` | Local vLLM OpenAI-compatible base URL. |
+
+---
+
+## 🖥️ How to Use the GUI
+
+1. Open the local URL.
+2. Review the project purpose and workflow lanes.
+3. Fill the required input fields.
+4. Adjust only the project-related customization controls.
+5. Upload source files when needed.
+6. Choose `Rule Engine` for local deterministic output or select a configured LLM provider.
+7. Run the workflow.
+8. Review warnings, scorecards, and output sections.
+9. Export the result as Markdown, JSON, DOCX, or PDF.
+
+---
+
+## 🔄 Workflow
+
+- Privacy policy
+- grade and red flags
+
+### Analysis Modules
+
+- privacy_policy_scan
+- legal_clause_scan
+- compliance_review
+
+### Output Sections
+
+- Grade
+- Missing disclosures
+- Risk flags
+- Fix checklist
+
+### Scorecards
+
+- Risk severity
+- Evidence strength
+- Negotiation impact
+- Obligation urgency
+- Missing protection risk
+
+---
+
+## 📤 Outputs & Exports
+
+- privacy grade
+- red flags
+- improvement checklist
+- policy rewrite
+
+The export system is designed for reviewable deliverables. For regulated or business-critical work, export drafts should be reviewed before sending to clients, customers, patients, employees, authorities, or production systems.
+
+---
+
+## 🔌 Real Integrations & Connector Policy
+
+Configured integrations in this standalone folder:
+
+- File upload
+- REST API
+- Export download
+- Job history
+- Regulatory reference library optional
+
+### Real Connector Requirements
+
+- approved legal playbook or clause library
+- jurisdiction-specific review by qualified counsel
+- document management/e-sign connector if exporting final agreements
+- repository or source files
+- CI/CD or observability connector for live system data
+- human approval before modifying production systems
+
+**Important:** this project does not simulate live data. If a workflow needs live Shopify, ATS, ERP, tax, customs, medical, security, market, map, analytics, or repository data, it must be connected with valid credentials and real API access. Missing connectors should produce clear setup errors rather than invented results.
+
+---
+
+## 🧯 Guardrails
+
+- Show uncertainty and confidence
+- Cite evidence from input when possible
+- Human review required for legal, medical, financial, hiring, or security decisions
+- Do not invent facts absent from input
+
+Recommended operating rules:
+
+- ✅ Use local models for private or sensitive files.
+- ✅ Keep API keys out of Git.
+- ✅ Review low-confidence or high-impact outputs manually.
+- ✅ Keep source files and exported deliverables organized under `data/`.
+- ❌ Do not treat AI output as legal, medical, tax, hiring, trading, or security authority without expert review.
+
+---
+
+## 🧪 Testing
+
+Run the local smoke test:
+
+```bash
+python tests/test_single_project.py
+```
+
+Run a health check after starting the server:
+
+```bash
+curl http://127.0.0.1:9148/api/health
+```
+
+Expected result: the API returns `ok: true` and identifies this project.
+
+---
+
+## 🧬 API Usage
+
+| Method | Endpoint | Use |
+|---|---|---|
+| `GET` | `/` | Opens the browser GUI. |
+| `GET` | `/api/health` | Health check for deployment and uptime monitoring. |
+| `GET` | `/api/projects` | Returns the local project configuration. |
+| `GET` | `/api/projects/{slug}` | Returns the project plugin metadata. |
+| `GET` | `/api/providers` | Lists configured providers and local/cloud options. |
+| `POST` | `/api/providers` | Saves provider settings/API keys. |
+| `POST` | `/api/upload` | Uploads source files for extraction or context. |
+| `POST` | `/api/run` | Runs the project workflow. |
+| `GET` | `/api/jobs` | Lists previous runs and job history. |
+| `GET` | `/api/jobs/{job_id}` | Reads one completed job. |
+| `GET` | `/api/jobs/{job_id}/export/{fmt}` | Exports a job as `md`, `json`, `docx`, or `pdf`. |
+| `GET` | `/api/project-local-status` | Verifies local project registration and implementation status. |
+
+### Minimal Run Request
+
+```bash
+curl -X POST http://127.0.0.1:9148/api/run \
+  -H "Content-Type: application/json" \
+  -d '{
+    "inputs": {
+      "work_brief": "Paste the source material or task details here"
+    },
+    "customization": {
+      "execution_mode": "Production"
+    },
+    "provider": "rule_engine"
+  }'
+```
+
+---
+
+## 📁 Folder Structure
+
+```text
+privacy-policy-grader/
+├─ app/                         # FastAPI backend, schemas, DB, providers, exports
+├─ static/                      # Browser GUI assets
+├─ plugins/                     # Project plugin JSON metadata
+├─ data/                        # SQLite DB, uploads, exports
+├─ tests/                       # Smoke tests
+├─ project_config.json          # Project-specific inputs, controls, UX, workflow
+├─ PROJECT_IMPLEMENTATION.md    # Implementation details and domain notes
+├─ requirements.txt             # Python dependencies
+├─ run_gui.sh                   # macOS/Linux/WSL launcher
+├─ run_gui_windows.ps1          # Windows PowerShell launcher
+└─ README.md                    # This file
+```
+
+---
+
+## 🚢 Deployment Notes
+
+For local/private deployment, run with `uvicorn` behind a reverse proxy if needed. For production:
+
+- Set `AI_SUITE_SECRET_KEY`.
+- Use HTTPS.
+- Store provider keys in environment variables or a proper secret manager.
+- Restrict upload sizes and allowed file types.
+- Back up the SQLite database or move job storage to a managed database.
+- Add authentication before exposing beyond localhost.
+- Enable logging and monitoring.
+
+Example production-style command:
+
+```bash
+AI_SUITE_HOST=0.0.0.0 AI_SUITE_PORT=9148 uvicorn app.main:app --host 0.0.0.0 --port 9148
+```
+
+---
+
+## 🧯 Troubleshooting
+
+| Problem | Fix |
+|---|---|
+| `python` not found | Install Python 3.10+ and ensure it is on PATH. |
+| PowerShell blocks the script | Run `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`. |
+| Port already in use | Set another port: `AI_SUITE_PORT=9200 ./run_gui.sh`. |
+| Provider fails | Verify API key, base URL, selected model, and account quota. |
+| Local model fails | Start Ollama/LM Studio/vLLM before running the workflow. |
+| PDF/DOCX export fails | Reinstall requirements and confirm optional export dependencies installed. |
+| Upload extraction is incomplete | Use cleaner source files or paste the important text into `work_brief`. |
+
+---
+
+## 🧭 Extension Points
+
+You can extend this project by editing:
+
+- `project_config.json` for inputs, settings, output sections, UX metadata, and workflow labels.
+- `plugins/privacy-policy-grader.json` for plugin metadata.
+- `app/domain_engine.py` for deterministic business logic.
+- `app/llm_gateway.py` for provider integrations.
+- `static/app.js` and `static/styles.css` for GUI behavior and component design.
+- `tests/test_single_project.py` for stronger project-specific tests.
+
+---
+
+## ✅ Final Implementation Status
+
+| Area | Status |
+|---|---|
+| Standalone folder GUI | ✅ Implemented |
+| FastAPI backend | ✅ Implemented |
+| Project-specific config | ✅ Implemented |
+| Local deterministic workflow | ✅ Implemented |
+| Local/cloud LLM routing | ✅ Implemented |
+| Uploads and exports | ✅ Implemented |
+| Job history | ✅ Implemented |
+| Real external connectors | ⚠️ Requires valid credentials/API setup |
+| Fake/simulated live data | ❌ Not allowed |
+
+---
+
+## 📜 License
+
+Use the license included in this folder. If no explicit license is present, treat the code as private until you choose one.
